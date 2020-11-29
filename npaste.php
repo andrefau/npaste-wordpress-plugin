@@ -140,7 +140,7 @@ function npaste_settings_archive_field_render(): void {
 
 	?>
 	<label for="npaste_archive">
-		<input id="npaste_archive" name="npaste_settings[npaste_settings_archive_field]" type="checkbox" value="<?php echo esc_attr( $archive ); ?>">
+		<input id="npaste_archive" name="npaste_settings[npaste_settings_archive_field]" type="checkbox" value="1" <?php checked( 1, $archive, true ); ?> >
 		If a paste should be archived instead of deleted when expiring.
 	</label>
 	<?php
@@ -157,7 +157,7 @@ function npaste_settings_encrypt_field_render(): void {
 
 	?>
 	<label for="npaste_encrypt">
-		<input id="npaste_encrypt" name="npaste_settings[npaste_settings_encrypt_field]" type="checkbox" value="<?php echo esc_attr( $encrypt ); ?>">
+		<input id="npaste_encrypt" name="npaste_settings[npaste_settings_encrypt_field]" type="checkbox" value="1" <?php checked( 1, $encrypt, true ); ?>>
 		If a paste should be encrypted using GPG.
 	</label>
 	<?php
