@@ -17,63 +17,189 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-class Npaste {
-	/**
-	 * Description: Holds the name of the plugin
-	 *
-	 * @var plugin_name Plugin name
-	 */
-	public $plugin_name;
+$plugin_name = plugin_basename( __FILE__ );
 
-	public function __construct() {
-		add_action( 'init', array( $this, 'custom_post_type' ) );
-		$this->plugin_name = plugin_basename( __FILE__ );
-	}
+add_action( 'admin_menu', 'npaste_add_admin_menu' );
+add_action( 'admin_init', 'npaste_settings_init' );
+add_filter( "plugin_action_links_$plugin_name", 'npaste_settings_link' );
 
-	public function activate() {
-		$this->custom_post_type();
-		flush_rewrite_rules();
-	}
-
-	public function register() {
-		add_action( 'admin_menu', array( $this, 'add_menu_page' ) );
-		add_filter( "plugin_action_links_$this->plugin_name", array( $this, 'settings_link' ) );
-	}
-
-	public function settings_link( $links ) {
-		$settings_link = '<a href="admin.php?page=npaste_plugin">Settings</a>';
-		array_push( $links, $settings_link );
-
-		return $links;
-	}
-
-	public function deactivate() {
-		flush_rewrite_rules();
-	}
-
-	public function custom_post_type() {
-		register_post_type(
-			'npaste_settings',
-			array(
-				'public' => false,
-				'label'  => 'Npaste settings',
-			)
-		);
-	}
-
-	public function add_menu_page() {
-		add_menu_page( 'Npaste Plugin', 'npaste', 'manage_options', 'npaste_plugin', array( $this, 'settings_page' ), 'dashicons-admin-network', 110 );
-	}
-
-	public function settings_page() {
-		require_once plugin_dir_path( __FILE__ ) . 'templates/settings.php';
-	}
+function npaste_add_admin_menu() {
+	add_options_page( 'Npaste settings', 'Npaste settings', 'manage_options', 'npaste_settings', 'npaste_settings_template' );
 }
 
-if ( class_exists( 'Npaste' ) ) {
-	$npaste = new Npaste();
-	$npaste->register();
+function npaste_settings_init() {
+	register_setting( 'npastePlugin', 'npaste_settings' );
+
+	add_settings_section(
+		'npastePlugin_section',
+		null,
+		null,
+		'npastePlugin'
+	);
+
+	add_settings_field(
+		'npaste_settings_age_field',
+		'Age',
+		'npaste_settings_age_field_render',
+		'npastePlugin',
+		'npastePlugin_section'
+	);
+
+	add_settings_field(
+		'npaste_settings_archive_field',
+		'Archive',
+		'npaste_settings_archive_field_render',
+		'npastePlugin',
+		'npastePlugin_section'
+	);
+
+	add_settings_field(
+		'npaste_settings_encrypt_field',
+		'Encrypt',
+		'npaste_settings_encrypt_field_render',
+		'npastePlugin',
+		'npastePlugin_section'
+	);
+
+	add_settings_field(
+		'npaste_settings_encryption_key_length_field',
+		'Encryption key length',
+		'npaste_settings_encryption_key_length_field_render',
+		'npastePlugin',
+		'npastePlugin_section'
+	);
+
+	add_settings_field(
+		'npaste_settings_password_field',
+		'Encryption key length',
+		'npaste_settings_password_field_render',
+		'npastePlugin',
+		'npastePlugin_section'
+	);
+
+	add_settings_field(
+		'npaste_settings_url_field',
+		'URL',
+		'npaste_settings_url_field_render',
+		'npastePlugin',
+		'npastePlugin_section'
+	);
+
+	add_settings_field(
+		'npaste_settings_username_field',
+		'Username',
+		'npaste_settings_username_field_render',
+		'npastePlugin',
+		'npastePlugin_section'
+	);
 }
 
-register_activation_hook( __FILE__, array( $npaste, 'activate' ) );
-register_deactivation_hook( __FILE__, array( $npaste, 'deactivate' ) );
+function npaste_settings_age_field_render() {
+	$options = get_option( 'npaste_settings' );
+	$age     = is_array( $options ) && array_key_exists( 'npaste_settings_age_field', $options )
+		? $options['npaste_settings_age_field']
+		: '';
+
+	?>
+	<input type="text" name="npaste_settings[npaste_settings_age_field]" value='<?php echo $age; ?>'>
+	<p class="description">Paste age (s,m,h,d,y)</p>
+	<?php
+}
+
+function npaste_settings_archive_field_render() {
+	$options = get_option( 'npaste_settings' );
+	$archive = is_array( $options ) && array_key_exists( 'npaste_settings_archive_field', $options )
+		? $options['npaste_settings_archive_field']
+		: false;
+
+	?>
+	<label for="npaste_archive">
+		<input id="npaste_archive" name="npaste_settings[npaste_settings_archive_field]" type="checkbox" value="<?php echo $archive; ?>">
+		If a paste should be archived instead of deleted when expiring.
+	</label>
+	<?php
+}
+
+function npaste_settings_encrypt_field_render() {
+	$options = get_option( 'npaste_settings' );
+	$encrypt = is_array( $options ) && array_key_exists( 'npaste_settings_encrypt_field', $options )
+		? $options['npaste_settings_encrypt_field']
+		: false;
+
+	?>
+	<label for="npaste_encrypt">
+		<input id="npaste_encrypt" name="npaste_settings[npaste_settings_encrypt_field]" type="checkbox" value="<?php echo $encrypt; ?>">
+		If a paste should be encrypted using GPG.
+	</label>
+	<?php
+}
+
+function npaste_settings_encryption_key_length_field_render() {
+	$options    = get_option( 'npaste_settings' );
+	$key_length = is_array( $options ) && array_key_exists( 'npaste_settings_encryption_key_length_field', $options )
+		? $options['npaste_settings_encryption_key_length_field']
+		: '';
+
+	?>
+	<input type="text" name="npaste_settings[npaste_settings_encryption_key_length_field]" value='<?php echo $key_length; ?>'>
+	<p class="description">The length of the encryption key.</p>
+	<?php
+}
+
+function npaste_settings_password_field_render() {
+	$options  = get_option( 'npaste_settings' );
+	$password = is_array( $options ) && array_key_exists( 'npaste_settings_password_field', $options )
+		? $options['npaste_settings_password_field']
+		: '';
+
+	?>
+	<input type="password" name="npaste_settings[npaste_settings_password_field]" value="<?php echo $password; ?>">
+	<p class="description">Your API password.</p>
+	<?php
+}
+
+function npaste_settings_url_field_render() {
+	$options = get_option( 'npaste_settings' );
+	$url     = is_array( $options ) && array_key_exists( 'npaste_settings_url_field', $options )
+		? $options['npaste_settings_url_field']
+		: '';
+
+	?>
+	<input type="text" name="npaste_settings[npaste_settings_url_field]" value="<?php echo $url; ?>">
+	<p class="description">The URL for the npaste server to use.</p>
+	<?php
+}
+
+function npaste_settings_username_field_render() {
+	$options  = get_option( 'npaste_settings' );
+	$username = is_array( $options ) && array_key_exists( 'npaste_settings_username_field', $options )
+		? $options['npaste_settings_username_field']
+		: '';
+
+	?>
+	<input type="text" name="npaste_settings[npaste_settings_username_field]" value="<?php echo $username; ?>">
+	<p class="description">Your API username.</p>
+	<?php
+}
+
+function npaste_settings_template() {
+	?>
+
+	<form action="options.php" method="POST">
+		<h1>Npaste settings</h1>
+		<?php
+		settings_fields( 'npastePlugin' );
+		do_settings_sections( 'npastePlugin' );
+		submit_button();
+		?>
+	</form>
+
+	<?php
+}
+
+function npaste_settings_link( $links ) {
+	$settings_link = '<a href="options-general.php?page=npaste_settings">Settings</a>';
+	array_push( $links, $settings_link );
+
+	return $links;
+}
