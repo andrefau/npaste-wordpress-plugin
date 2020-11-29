@@ -23,11 +23,31 @@ add_action( 'admin_menu', 'npaste_add_admin_menu' );
 add_action( 'admin_init', 'npaste_settings_init' );
 add_filter( "plugin_action_links_$plugin_name", 'npaste_settings_link' );
 
-function npaste_add_admin_menu() {
+/**
+ * Add link to the npaste settings page
+ *
+ * @param array $links The links array.
+ *
+ * @return array
+ */
+function npaste_settings_link( $links ): array {
+	$settings_link = '<a href="options-general.php?page=npaste_settings">Settings</a>';
+	array_push( $links, $settings_link );
+
+	return $links;
+}
+
+/**
+ * Adds options page for npaste settings
+ */
+function npaste_add_admin_menu(): void {
 	add_options_page( 'Npaste settings', 'Npaste settings', 'manage_options', 'npaste_settings', 'npaste_settings_template' );
 }
 
-function npaste_settings_init() {
+/**
+ * Registers settings and fields
+ */
+function npaste_settings_init(): void {
 	register_setting( 'npastePlugin', 'npaste_settings' );
 
 	add_settings_section(
@@ -71,7 +91,7 @@ function npaste_settings_init() {
 
 	add_settings_field(
 		'npaste_settings_password_field',
-		'Encryption key length',
+		'Password',
 		'npaste_settings_password_field_render',
 		'npastePlugin',
 		'npastePlugin_section'
@@ -94,7 +114,10 @@ function npaste_settings_init() {
 	);
 }
 
-function npaste_settings_age_field_render() {
+/**
+ * Render `Age` field
+ */
+function npaste_settings_age_field_render(): void {
 	$options = get_option( 'npaste_settings' );
 	$age     = is_array( $options ) && array_key_exists( 'npaste_settings_age_field', $options )
 		? $options['npaste_settings_age_field']
@@ -106,7 +129,10 @@ function npaste_settings_age_field_render() {
 	<?php
 }
 
-function npaste_settings_archive_field_render() {
+/**
+ * Render `Archive` field
+ */
+function npaste_settings_archive_field_render(): void {
 	$options = get_option( 'npaste_settings' );
 	$archive = is_array( $options ) && array_key_exists( 'npaste_settings_archive_field', $options )
 		? $options['npaste_settings_archive_field']
@@ -120,7 +146,10 @@ function npaste_settings_archive_field_render() {
 	<?php
 }
 
-function npaste_settings_encrypt_field_render() {
+/**
+ * Render `Encrypt` field
+ */
+function npaste_settings_encrypt_field_render(): void {
 	$options = get_option( 'npaste_settings' );
 	$encrypt = is_array( $options ) && array_key_exists( 'npaste_settings_encrypt_field', $options )
 		? $options['npaste_settings_encrypt_field']
@@ -134,7 +163,10 @@ function npaste_settings_encrypt_field_render() {
 	<?php
 }
 
-function npaste_settings_encryption_key_length_field_render() {
+/**
+ * Render `Encryption key length` field
+ * */
+function npaste_settings_encryption_key_length_field_render(): void {
 	$options    = get_option( 'npaste_settings' );
 	$key_length = is_array( $options ) && array_key_exists( 'npaste_settings_encryption_key_length_field', $options )
 		? $options['npaste_settings_encryption_key_length_field']
@@ -146,7 +178,10 @@ function npaste_settings_encryption_key_length_field_render() {
 	<?php
 }
 
-function npaste_settings_password_field_render() {
+/**
+ * Render `Password` field
+ */
+function npaste_settings_password_field_render(): void {
 	$options  = get_option( 'npaste_settings' );
 	$password = is_array( $options ) && array_key_exists( 'npaste_settings_password_field', $options )
 		? $options['npaste_settings_password_field']
@@ -158,7 +193,10 @@ function npaste_settings_password_field_render() {
 	<?php
 }
 
-function npaste_settings_url_field_render() {
+/**
+ * Render `URL` field
+ */
+function npaste_settings_url_field_render(): void {
 	$options = get_option( 'npaste_settings' );
 	$url     = is_array( $options ) && array_key_exists( 'npaste_settings_url_field', $options )
 		? $options['npaste_settings_url_field']
@@ -170,7 +208,10 @@ function npaste_settings_url_field_render() {
 	<?php
 }
 
-function npaste_settings_username_field_render() {
+/**
+ * Render `Username` field
+ */
+function npaste_settings_username_field_render(): void {
 	$options  = get_option( 'npaste_settings' );
 	$username = is_array( $options ) && array_key_exists( 'npaste_settings_username_field', $options )
 		? $options['npaste_settings_username_field']
@@ -182,7 +223,10 @@ function npaste_settings_username_field_render() {
 	<?php
 }
 
-function npaste_settings_template() {
+/**
+ * Creates the settings form
+ */
+function npaste_settings_template(): void {
 	?>
 
 	<form action="options.php" method="POST">
@@ -195,11 +239,4 @@ function npaste_settings_template() {
 	</form>
 
 	<?php
-}
-
-function npaste_settings_link( $links ) {
-	$settings_link = '<a href="options-general.php?page=npaste_settings">Settings</a>';
-	array_push( $links, $settings_link );
-
-	return $links;
 }
