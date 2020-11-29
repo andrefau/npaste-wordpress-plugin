@@ -124,7 +124,7 @@ function npaste_settings_age_field_render(): void {
 		: '';
 
 	?>
-	<input type="text" name="npaste_settings[npaste_settings_age_field]" value='<?php echo $age; ?>'>
+	<input type="text" name="npaste_settings[npaste_settings_age_field]" value='<?php echo esc_attr( $age ); ?>'>
 	<p class="description">Paste age (s,m,h,d,y)</p>
 	<?php
 }
@@ -140,7 +140,7 @@ function npaste_settings_archive_field_render(): void {
 
 	?>
 	<label for="npaste_archive">
-		<input id="npaste_archive" name="npaste_settings[npaste_settings_archive_field]" type="checkbox" value="<?php echo $archive; ?>">
+		<input id="npaste_archive" name="npaste_settings[npaste_settings_archive_field]" type="checkbox" value="<?php echo esc_attr( $archive ); ?>">
 		If a paste should be archived instead of deleted when expiring.
 	</label>
 	<?php
@@ -157,7 +157,7 @@ function npaste_settings_encrypt_field_render(): void {
 
 	?>
 	<label for="npaste_encrypt">
-		<input id="npaste_encrypt" name="npaste_settings[npaste_settings_encrypt_field]" type="checkbox" value="<?php echo $encrypt; ?>">
+		<input id="npaste_encrypt" name="npaste_settings[npaste_settings_encrypt_field]" type="checkbox" value="<?php echo esc_attr( $encrypt ); ?>">
 		If a paste should be encrypted using GPG.
 	</label>
 	<?php
@@ -173,7 +173,7 @@ function npaste_settings_encryption_key_length_field_render(): void {
 		: '';
 
 	?>
-	<input type="text" name="npaste_settings[npaste_settings_encryption_key_length_field]" value='<?php echo $key_length; ?>'>
+	<input type="text" name="npaste_settings[npaste_settings_encryption_key_length_field]" value='<?php echo esc_attr( $key_length ); ?>'>
 	<p class="description">The length of the encryption key.</p>
 	<?php
 }
@@ -188,7 +188,7 @@ function npaste_settings_password_field_render(): void {
 		: '';
 
 	?>
-	<input type="password" name="npaste_settings[npaste_settings_password_field]" value="<?php echo $password; ?>">
+	<input type="password" name="npaste_settings[npaste_settings_password_field]" value="<?php echo esc_attr( $password ); ?>">
 	<p class="description">Your API password.</p>
 	<?php
 }
@@ -203,7 +203,7 @@ function npaste_settings_url_field_render(): void {
 		: '';
 
 	?>
-	<input type="text" name="npaste_settings[npaste_settings_url_field]" value="<?php echo $url; ?>">
+	<input type="text" name="npaste_settings[npaste_settings_url_field]" value="<?php echo esc_attr( $url ); ?>">
 	<p class="description">The URL for the npaste server to use.</p>
 	<?php
 }
@@ -218,7 +218,7 @@ function npaste_settings_username_field_render(): void {
 		: '';
 
 	?>
-	<input type="text" name="npaste_settings[npaste_settings_username_field]" value="<?php echo $username; ?>">
+	<input type="text" name="npaste_settings[npaste_settings_username_field]" value="<?php echo esc_attr( $username ); ?>">
 	<p class="description">Your API username.</p>
 	<?php
 }
